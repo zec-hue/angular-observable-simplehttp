@@ -35,6 +35,11 @@ export class JobsComponent implements OnInit {
 
     this.mySubsription.push(this.jobsService.get_humans().subscribe(result => {
 
+      /*
+      More info on chaining services
+      - https://stackoverflow.com/questions/34104638/how-to-chain-http-calls-in-angular2
+      - https://www.learnrxjs.io/learn-rxjs/operators/transformation/mergemap
+       */
       console.log("===== Retrieved Humans successful =====");
       let myHumans = <Human[]> result;
       for(var i=0; i < myHumans.length; i++){
