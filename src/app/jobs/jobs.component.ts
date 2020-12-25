@@ -1,9 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, of } from 'rxjs';
 
 import { JobsService } from '../jobs.service';
 import { Job } from '../jobsobject';
 import { Human } from '../humanobject';
+
+import { NumberService } from '../number.service';
+import { Numbers } from '../numberobject';
 
 @Component({
   selector: 'app-jobs',
@@ -14,10 +17,10 @@ export class JobsComponent implements OnInit {
 
   public jobs: Job[] = [];
   public humans: Human[] = [];
-  private myHumans: Human[] = [];
+  public numbers: Numbers[] = [];
   private mySubsription: Subscription[] = []
 
-  constructor(private jobsService: JobsService) {}
+  constructor(private jobsService: JobsService, private numberService: NumberService) {}
 
   ngOnInit(): void {
 
@@ -31,15 +34,22 @@ export class JobsComponent implements OnInit {
     // });
 
     this.mySubsription.push(this.jobsService.get_humans().subscribe(result => {
-      this.myHumans = result as Human[];
-      console.log("===== =====");
-      console.log(JSON.stringify(this.myHumans));
-      console.log("===== =====");
-      console.log("my humans count = " + this.myHumans.length);
-      console.log("===== =====");
-      for(var i=0; i<this.myHumans.length; i++){
-        this.humans.push(this.myHumans[i]);
+
+      console.log("===== Retrieved Humans successful =====");
+      let myHumans = <Human[]> result;
+      for(var i=0; i < myHumans.length; i++){
+        this.humans.push(myHumans[i]);
       }
+
+      console.log("===== then subscribing to numbers service =====");
+      this.numberService.get_numbers().subscribe(numbersResult => {
+        console.log("===== Retrieved Numbers successful =====");
+        let myNumbers = <Numbers[]> numbersResult;
+        for(var i=0; i < myNumbers.length; i++){
+          this.numbers.push(myNumbers[i]);
+        }
+      });
+
     }));
 
   }
